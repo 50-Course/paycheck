@@ -1,6 +1,9 @@
 # Paycheck
 
-Paycheck is an example finance application, written to demonstrate OpenBanking in a minature way.
+Paycheck is an example finance application, written to demonstrate OpenBanking in a minature way. The 
+application is a loan-lending application that connect customers to ease access of funds - virtul currencies
+in our case. 
+To learn more about Open Banking and its Shenenigans, visit: https://www.mastercard.com/news/perspectives/2022/open-banking-101/
 
 Collection of thoughts on the proposed architecture. Very high-level abstraction
 of features for our application:
@@ -39,4 +42,9 @@ of features for our application:
 
 - Disputes Module:
     Handles disputes related to failed transactions and loan repayments.
+
+
+## Some Technical stuff
+
+* Diagramming are proposed on a companion repo: https://github.com/50-Course/paycheck-architecture.git 
 
