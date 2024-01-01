@@ -1,0 +1,7 @@
+-c base.in
+
+django-debug-toolbar
+ipdb
+ipython
+
+
