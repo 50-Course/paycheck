@@ -1,4 +1,6 @@
-django
-django-rest-framework
+django==5.0
+django-rest-framework==3.14.0
 django-cors-headers
+drf-spectacular
+django-silk
 
