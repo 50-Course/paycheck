@@ -1,6 +1,6 @@
 # What is Paycheck
 
-Copilot is a digital finance application that allow users to quickly access funds,
+Paycheck is a digital finance application that allow users to quickly access funds,
 irrespective of status, postition or location.
 
 ## Concepts
