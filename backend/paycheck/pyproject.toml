@@ -1,0 +1,6 @@
+[tool.black]
+excludes=
+ignore=I001
+max-line-length=88
+
+
