@@ -1,0 +1,5 @@
+-c base.in
+
+ipdb
+django-silk
+pytest-django
