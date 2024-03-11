@@ -1,6 +1,21 @@
 [tool.black]
-excludes=
-ignore=I001
-max-line-length=88
+include = '\.pyi?$'
+exclude = '''
+    /(
+        \.git
+      | \.hg
+      | \.mypy_cache
+      | \.tox
+      | \.venv
+      | __migrations__/  # Django
+      | __pycache__/
+      | _build
+      | buck-out
+      | build
+      | dist
 
-
+      # The following are specific to Black, you probably don't want those.
+      | blib2to3
+      | tests/data
+    )/
+'''
