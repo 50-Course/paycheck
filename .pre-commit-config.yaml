@@ -52,4 +52,5 @@ repos:
     rev: 24.2.0
     hooks:
       - id: black
+        language_version: python3
 
