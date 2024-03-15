@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,13 +21,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-w9yk&7yu6081p(258f&$uiq)x^nt_2%(9boj5oq0p*yhern(r="
+SECRET_KEY = os.getenv("SECRET_KEY", "PAYCHECK$rePlaceMe-in-Production!")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("PAYCHECK_BACKEND_DEBUG", "off") == "on"
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "0.0.0.0"]
+ALLOWED_HOSTS += os.getenv("PAYCHECK_ALLOWED_HOSTS", "").split(",")
 
 # Application definition
 

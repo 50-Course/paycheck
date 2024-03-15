@@ -29,4 +29,5 @@ setup(
     install_requires=install_requires,
     package_dir={"": "src"},
     include_package_data=True,
+    scripts=paycheck,
 )
