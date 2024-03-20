@@ -5,7 +5,9 @@
 #    pip-compile backend/paycheck/requirements/base.in
 #
 asgiref==3.7.2
-    # via django
+    # via
+    #   django
+    #   django-cors-headers
 attrs==23.2.0
     # via
     #   jsonschema
@@ -13,12 +15,19 @@ attrs==23.2.0
 django==5.0.3
     # via
     #   -r backend/paycheck/requirements/base.in
+    #   django-cors-headers
     #   djangorestframework
+    #   djangorestframework-simplejwt
     #   drf-spectacular
+django-cors-headers==4.3.1
+    # via -r backend/paycheck/requirements/base.in
 djangorestframework==3.14.0
     # via
     #   -r backend/paycheck/requirements/base.in
+    #   djangorestframework-simplejwt
     #   drf-spectacular
+djangorestframework-simplejwt==5.3.1
+    # via -r backend/paycheck/requirements/base.in
 drf-spectacular==0.27.1
     # via -r backend/paycheck/requirements/base.in
 inflection==0.5.1
@@ -27,6 +36,8 @@ jsonschema==4.21.1
     # via drf-spectacular
 jsonschema-specifications==2023.12.1
     # via jsonschema
+pyjwt==2.8.0
+    # via djangorestframework-simplejwt
 pytz==2024.1
     # via djangorestframework
 pyyaml==6.0.1
