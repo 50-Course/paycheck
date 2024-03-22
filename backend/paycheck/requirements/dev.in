@@ -2,4 +2,6 @@
 
 ipdb
 django-silk
+pytest
+Faker
 pytest-django
