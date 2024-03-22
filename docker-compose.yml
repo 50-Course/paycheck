@@ -1,0 +1,10 @@
+# READ ME FIRST!
+#
+# ATTENTION: This file is used to build the docker image and run the container in production mode
+#           It is not used to run the application in development mode
+#           For development mode, see the README.md file on how to run the application using the Makefile
+#
+#
+
+# Define the version of the docker image
+export PAYCHECK_VERSION=1.0.0
