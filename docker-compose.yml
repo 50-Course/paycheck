@@ -22,7 +22,6 @@ services:
     volumes:
       - dbdata:/var/lib/postgresql/data
     profiles:
-      - dev
       - prod
 
   ## Paycheck Payments Service
@@ -38,7 +37,6 @@ services:
     volumes:
       - paymentsdata-node:/var/lib/postgresql/data
     profiles:
-      - dev
       - prod
 
   ## Paycheck Cards Service
@@ -54,7 +52,6 @@ services:
     volumes:
       - cardsdata-node:/var/lib/postgresql/data
     profiles:
-      - dev
       - prod
 
   ## Paycheck Test Database
