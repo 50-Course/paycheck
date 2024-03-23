@@ -31,6 +31,7 @@ services:
       - paycheck-cards-db
     profiles:
       - prod
+
   paycheck-core-db:
     image: postgres:13-alpine
     container_name: paycheck-core-database
@@ -94,8 +95,12 @@ services:
     profiles:
       - test
 
+networks:
+  frontend:
+  backend:
+
 volumes:
-  - cardsdata-node
-  - paymentsdata-node
-  - dbdata
-  - testdata
+  cardsdata-node:
+  paymentsdata-node:
+  dbdata:
+  testdata:
