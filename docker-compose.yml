@@ -8,3 +8,4 @@
 
 # Define the version of the docker image
 export PAYCHECK_VERSION=1.0.0
+export PAYCHECK_IMAGE=paycheck:${PAYCHECK_VERSION}
