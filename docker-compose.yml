@@ -9,6 +9,14 @@
 version: "3.9"
 
 services:
+  ## PAYCHECK CORE SERVICE
+  #
+  # This service is responsible for handling the core operations of the application
+  # It is the main service that is responsible for handling the user's account, transactions, and other core operations
+  # primarily related to everything that loans and savings
+  #
+  # ![NOTE]: PLEASE DONT CHANGE THE CONTAINER_NAME, AS IT IS USED IN THE APPLICATION TO CONNECT TO THE DATABASE
+  # FAILURE TO COMPILE, CAN RESULT IN CRITICAL ASPECT OF THE APPLICATION GOING DOWN
   paycheck-core:
     image: paycheck-core:latest
     container_name: paycheck-core
@@ -23,14 +31,6 @@ services:
       - paycheck-cards-db
     profiles:
       - prod
-  ## PAYCHECK CORE SERVICE
-  #
-  # This service is responsible for handling the core operations of the application
-  # It is the main service that is responsible for handling the user's account, transactions, and other core operations
-  # primarily related to everything that loans and savings
-  #
-  # ![NOTE]: PLEASE DONT CHANGE THE CONTAINER_NAME, AS IT IS USED IN THE APPLICATION TO CONNECT TO THE DATABASE
-  # FAILURE TO COMPILE, CAN RESULT IN CRITICAL ASPECT OF THE APPLICATION GOING DOWN
   paycheck-core-db:
     image: postgres:13-alpine
     container_name: paycheck-core-database
