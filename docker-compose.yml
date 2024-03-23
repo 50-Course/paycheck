@@ -1,0 +1,141 @@
+version: "3.9"
+####################################################################################################
+# READ ME FIRST!
+#
+# ATTENTION: This file is used to build the docker image and run the container in production mode
+#           It is not used to run the application in development mode
+#           For development mode, see the README.md file on how to run the application using the Makefile
+#
+####################################################################################################
+
+services:
+  ####################################################################################################
+  ## PAYCHECK CORE SERVICE
+  #
+  # This service is responsible for handling the core operations of the application
+  # It is the main service that is responsible for handling the user's account, transactions, and other core operations
+  # primarily related to everything that loans and savings
+  #
+  # ![NOTE]: PLEASE DONT CHANGE THE CONTAINER_NAME, AS IT IS USED IN THE APPLICATION TO CONNECT TO THE DATABASE
+  # FAILURE TO COMPILE, CAN RESULT IN CRITICAL ASPECT OF THE APPLICATION GOING DOWN
+  ####################################################################################################
+  paycheck-core:
+    image: paycheck-core:latest
+    container_name: paycheck-core
+    context: backend/paycheck/docker
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    networks:
+      - frontend
+    depends_on:
+      - paycheck-core-db
+      - paycheck-payments-db
+      - paycheck-cards-db
+    profiles:
+      - prod
+    deploy:
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+        reservations:
+          cpus: "0.1"
+          memory: 50M
+
+  paycheck-core-db:
+    image: postgres:13-alpine
+    container_name: paycheck-core-database
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    profiles:
+      - prod
+
+  ####################################################################################################
+  ## PAYCHECK PAYMENTS SERVICE
+  #
+  # This database is used by the `paycheck-payments` service to store payments and remittance-related data
+  ####################################################################################################
+  paycheck-payments-db:
+    image: postgres:13-alpine
+    container_name: paycheck-payments-database
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5433:5432"
+    volumes:
+      - paymentsdata-node:/var/lib/postgresql/data
+    profiles:
+      - prod
+
+  ####################################################################################################
+  ## PAYCHECK CARDS SERVICE
+  ####################################################################################################
+  paycheck-cards-db:
+    image: postgres:13-alpine
+    container_name: paycheck-cards-database
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5434:5432"
+    volumes:
+      - cardsdata-node:/var/lib/postgresql/data
+    profiles:
+      - prod
+
+  ####################################################################################################
+  ## PAYCHECK TEST DATABASE
+  #
+  ## This is used to run the tests for the entire application
+  ####################################################################################################
+  testdb:
+    image: postgres:13-alpine
+    container_name: paycheck-test-database
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5435:5432"
+    volumes:
+      - testdata:/var/lib/postgresql/data
+    profiles:
+      - test
+
+  redis:
+    image: redis:7.0-alpine
+    container_name: paycheck-redis
+    ports:
+      - "6379:6379"
+    profiles:
+      - prod
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+
+networks:
+  frontend:
+  backend:
+
+volumes:
+  cardsdata-node:
+  paymentsdata-node:
+  dbdata:
+  testdata:
