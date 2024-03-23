@@ -32,6 +32,8 @@ services:
       - prod
 
   ## PAYCHECK PAYMENTS SERVICE
+  #
+  # This database is used by the `paycheck-payments` service to store payments and remittance-related data
   paycheck-payments-db:
     image: postgres:13-alpine
     container_name: paycheck-payments-database
