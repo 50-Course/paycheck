@@ -9,6 +9,20 @@
 version: "3.9"
 
 services:
+  paycheck-core:
+    image: paycheck-core:latest
+    container_name: paycheck-core
+    context: backend/paycheck/docker
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - paycheck-core-db
+      - paycheck-payments-db
+      - paycheck-cards-db
+    profiles:
+      - prod
   ## PAYCHECK CORE SERVICE
   #
   # This service is responsible for handling the core operations of the application
