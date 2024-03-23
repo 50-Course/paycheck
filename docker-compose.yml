@@ -1,14 +1,15 @@
+version: "3.9"
+####################################################################################################
 # READ ME FIRST!
 #
 # ATTENTION: This file is used to build the docker image and run the container in production mode
 #           It is not used to run the application in development mode
 #           For development mode, see the README.md file on how to run the application using the Makefile
 #
-#
-
-version: "3.9"
+####################################################################################################
 
 services:
+  ####################################################################################################
   ## PAYCHECK CORE SERVICE
   #
   # This service is responsible for handling the core operations of the application
@@ -17,6 +18,7 @@ services:
   #
   # ![NOTE]: PLEASE DONT CHANGE THE CONTAINER_NAME, AS IT IS USED IN THE APPLICATION TO CONNECT TO THE DATABASE
   # FAILURE TO COMPILE, CAN RESULT IN CRITICAL ASPECT OF THE APPLICATION GOING DOWN
+  ####################################################################################################
   paycheck-core:
     image: paycheck-core:latest
     container_name: paycheck-core
@@ -25,12 +27,24 @@ services:
       - .env
     ports:
       - "8080:8080"
+    networks:
+      - frontend
     depends_on:
       - paycheck-core-db
       - paycheck-payments-db
       - paycheck-cards-db
     profiles:
       - prod
+    deploy:
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+        reservations:
+          cpus: "0.1"
+          memory: 50M
 
   paycheck-core-db:
     image: postgres:13-alpine
@@ -46,9 +60,11 @@ services:
     profiles:
       - prod
 
+  ####################################################################################################
   ## PAYCHECK PAYMENTS SERVICE
   #
   # This database is used by the `paycheck-payments` service to store payments and remittance-related data
+  ####################################################################################################
   paycheck-payments-db:
     image: postgres:13-alpine
     container_name: paycheck-payments-database
@@ -63,7 +79,9 @@ services:
     profiles:
       - prod
 
+  ####################################################################################################
   ## PAYCHECK CARDS SERVICE
+  ####################################################################################################
   paycheck-cards-db:
     image: postgres:13-alpine
     container_name: paycheck-cards-database
@@ -78,9 +96,11 @@ services:
     profiles:
       - prod
 
+  ####################################################################################################
   ## PAYCHECK TEST DATABASE
   #
   ## This is used to run the tests for the entire application
+  ####################################################################################################
   testdb:
     image: postgres:13-alpine
     container_name: paycheck-test-database
@@ -94,6 +114,21 @@ services:
       - testdata:/var/lib/postgresql/data
     profiles:
       - test
+
+  redis:
+    image: redis:7.0-alpine
+    container_name: paycheck-redis
+    ports:
+      - "6379:6379"
+    profiles:
+      - prod
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
 
 networks:
   frontend:
