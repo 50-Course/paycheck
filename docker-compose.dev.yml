@@ -1,0 +1,15 @@
+version: '3.9'
+
+#  Environment variables
+#  ####################################################################################################
+#  # READ ME FIRST!
+#  #
+#  # ATTENTION: This file is used to build the docker image and run the container in development mode
+#
+# #           For guide on how to run the application in development mode, see the README.md file
+# #
+# ####################################################################################################
+
+
+services:
+
