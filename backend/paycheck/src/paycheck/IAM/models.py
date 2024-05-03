@@ -39,7 +39,7 @@ class User(AbstractUser):
         null=False,
     )
 
-    REQUIRED_FIELDS = ["email"]
+    REQUIRED_FIELDS = ["first_name", "last_name"]
     USERNAME_FIELD = "email"
 
     objects = models.Manager()
@@ -56,9 +56,13 @@ class UserProfile(models.Model):
         CUSTOMER_SUPPORT = "Customer Support"
         ADMIN = "Admin"
 
-    user = models.OneToOneField(
-        "User", on_delete=models.CASCADE, related_name="profile"
-    )
+
+class Customer(UserProfile):
+    """
+    Represents a customer of the platform.
+    """
+
+    user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="profile")
 
     phone_number = models.CharField(
         max_length=20, blank=True, null=True, help_text=_("Phone number of the user")
@@ -104,9 +108,6 @@ class UserProfile(models.Model):
         null=True,
         help_text=_("Document to verify the user"),
     )
-
-    def full_name(self) -> str:
-        return f"{self.user}"
 
     def __str__(self) -> str:
         return f"{self.full_name()} - {self.user_type}"
