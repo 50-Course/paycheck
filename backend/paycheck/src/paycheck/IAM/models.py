@@ -24,6 +24,21 @@ class ProfileManager(models.Manager):
 
 
 class User(AbstractUser):
+    first_name = models.CharField(
+        _("First Name"),
+        help_text="Given name of the user",
+        max_length=40,
+        blank=False,
+        null=False,
+    )
+    last_name = models.CharField(
+        _("Last Name"),
+        help_text="Surname of the user",
+        max_length=40,
+        blank=False,
+        null=False,
+    )
+
     REQUIRED_FIELDS = ["email"]
     USERNAME_FIELD = "email"
 
@@ -91,7 +106,48 @@ class UserProfile(models.Model):
     )
 
     def full_name(self) -> str:
-        return f"{self.user.first_name} {self.user.last_name}"
+        return f"{self.user}"
 
     def __str__(self) -> str:
         return f"{self.full_name()} - {self.user_type}"
+
+
+class SupportUser(models.Model):
+    """
+    Represent a member of the support team.
+
+    SupportUser is someone who is an admin with limited access to the system
+
+    They can:
+        - Manage disputes and resolutions on behalf of the user
+        - Manage user accounts
+    """
+
+    user = models.OneToOneField(
+        _("Support"),
+        on_delete=models.CASCADE,
+        related_name="support_user",
+        help_text=_("Support User"),
+    )
+
+
+class AdminUser(models.Model):
+    """
+    Represent an admin user.
+
+    AdminUser is someone who is an admin with full access to the system
+
+    They can:
+        - Manage disputes and resolutions on behalf of the user
+        - Manage user accounts -blacklist or whitelist a user
+        - Manage user support staff
+        - Manage user support staff accounts
+        - Manage user support staff permissions
+    """
+
+    user = models.OneToOneField(
+        _("Admin User"),
+        on_delete=models.CASCADE,
+        related_name="admin_user",
+        help_text=_("Admin User"),
+    )
