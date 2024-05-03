@@ -106,7 +106,7 @@ class UserProfile(models.Model):
     )
 
     def full_name(self) -> str:
-        return f"{self.user.first_name} {self.user.last_name}"
+        return f"{self.user}"
 
     def __str__(self) -> str:
         return f"{self.full_name()} - {self.user_type}"
@@ -123,7 +123,12 @@ class SupportUser(models.Model):
         - Manage user accounts
     """
 
-    user = models.OneToOneField(User, _("SupportUser", help_text="Support"))
+    user = models.OneToOneField(
+        _("Support"),
+        on_delete=models.CASCADE,
+        related_name="support_user",
+        help_text=_("Support User"),
+    )
 
 
 class AdminUser(models.Model):
@@ -140,4 +145,9 @@ class AdminUser(models.Model):
         - Manage user support staff permissions
     """
 
-    user = models.OneToOneField(User, _("AdminUser", help_text="Admin"))
+    user = models.OneToOneField(
+        _("Admin User"),
+        on_delete=models.CASCADE,
+        related_name="admin_user",
+        help_text=_("Admin User"),
+    )
