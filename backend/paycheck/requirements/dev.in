@@ -3,6 +3,7 @@
 ipdb
 django-silk
 Faker
+pytest
 pytest-django
 pytest-cov==3.0.0
 black==22.3.0
