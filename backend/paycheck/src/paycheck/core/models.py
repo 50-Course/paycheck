@@ -18,8 +18,8 @@ class BaseUser(AbstractUser):
     information about the user types in our system.
 
     We have:
-        - a user profile that contains the user bio and additional metadata,
-        - a `user` model that contains the customer information, essentially the end-users of our system
+        - a user that contains the user basic information, needed by django auth system
+        - a `user_profile` model that contains the customer information, essentially the end-users of our system
         - a `Support` model that contains the support information, essentially the support staff of our system
         - a `Admin` model that contains the admin information, essentially the admin staff of our system
 
@@ -100,7 +100,141 @@ class BaseUser(AbstractUser):
         full_name = f"{self.first_name} {self.last_name}"
         return full_name.strip()
 
+
+class Address(models.Model):
+    """
+    Represent an address location. This helps in storing the location of the user, as well as
+    during analytical session for internal teams, e.g filtering all users by location.
+
+    """
+
+    address_line_1 = models.CharField(
+        _("address line 1"),
+        max_length=100,
+        blank=True,
+        help_text="Designates the address line 1 of the user",
+    )
+    address_line_2 = models.CharField(
+        _("address line 2"),
+        max_length=100,
+        blank=True,
+        help_text="Designates the address line 2 of the user",
+    )
+    city = models.CharField(
+        _("city"),
+        max_length=100,
+        blank=True,
+        help_text="Designates the city of the user",
+    )
+    state = models.CharField(
+        _("state"),
+        max_length=100,
+        blank=True,
+        help_text="Designates the state of the user",
+    )
+    country = models.CharField(
+        _("country"),
+        max_length=100,
+        blank=True,
+        help_text="Designates the country of the user",
+    )
+    zip_code = models.CharField(
+        _("zip code"),
+        max_length=100,
+        blank=True,
+        help_text="Designates the zip code of the user",
+    )
+
+
+class UserProfile(models.Model):
+    """
+    Represent a user model.
+    """
+
+    class VerificationStatus(models.TextChoices):
+        PENDING = "PENDING", _("PENDING")
+        VERIFIED = "VERIFIED", _("VERIFIED")
+        REJECTED = "REJECTED", _("REJECTED")
+
+    verfication_id_type = [
+        ("NIN", "NIN"),  # Nigerian Identity Number
+        ("BVN", "BVN"),  # Bank Verification Number of the user
+        ("DRIVER_LICENSE", "DRIVER_LICENSE"),
+        ("VOTER_CARD", "VOTER_CARD"),
+        ("INTERNATIONAL_PASSPORT", "INTERNATIONAL_PASSPORT"),
+    ]
+
+    user = models.OneToOneField(BaseUser, on_delete=models.CASCADE)
+    occupation = models.CharField(
+        _("occupation"),
+        max_length=100,
+        blank=True,
+        help_text=(
+            "User occupation allows us to know the type of user",
+            "It is used for loan disbursement, and analytical purposes",
+        ),
+    )
+    birth_date = models.DateField(
+        _("birth date"),
+        blank=True,
+        null=True,
+        help_text="Designates the date of birth of the user",
+    )
+    profile_picture = models.ImageField(
+        _("profile picture"),
+        upload_to="profile_pictures/",
+        blank=True,
+        null=True,
+        help_text=(
+            "Stores the selfies of the user at KYC process",
+            "Selfies is stored in the `profile_pictures` directory",
+        ),
+    )
+    address = models.ForeignKey(
+        Address,
+        on_delete=models.SET_NULL,
+        help_text="Designates the address of the user",
+    )
+    verification_status = models.CharField(
+        _("verification status"),
+        max_length=10,
+        choices=VerificationStatus.choices,
+        default=VerificationStatus.PENDING,
+        help_text="Desiginates if this useer has been verified to access our system",
+    )
+    verification_number = models.CharField(
+        _("verification number"),
+        max_length=40,
+        blank=True,
+        help_text="Designates the governent-issued identity number of the user, e.g NIN, BVN, etc.",
+    )
+    verification_id = models.ImageField(
+        _("verification id"),
+        upload_to="verification_ids/",
+        blank=True,
+        null=True,
+        help_text=(
+            "Stores the government-issued verification id of the user",
+            "Verification id is stored in the `verification_ids` directory",
+        ),
+    )
+
+    class Meta:
+        verbose_name = _("user")
+        verbose_name_plural = _("users")
+        indexes = [
+            models.Index(fields=["user"]),
+            models.Index(fields=["verification_status"]),
+            models.Index(fields=["verification_number"]),
+        ]
+
+    def __str__(self):
+        return self.user.full_name()
+
     @property
-    def is_verified(self) -> bool:
-        # TODO: Implement this
-        return NotImplementedError
+    def is_verified(self):
+        return self.verification_status
+
+    @is_verified.setter
+    def is_verified(self, value: str) -> None:
+        self.verification_status = value
