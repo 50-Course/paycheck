@@ -3,6 +3,10 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from phone_field import PhoneField
 from uuid import uuid4
+from django.contrib.auth import get_user_model
+from django.db.models import Q
+
+User = get_user_model()
 
 
 class BaseUser(AbstractUser):
@@ -86,6 +90,8 @@ class BaseUser(AbstractUser):
         help_text="Designates the phone number of the user",
     )
 
+    is_customer = models.BooleanField(default=False)
+
     REQUIRED_FIELDS = ["email", "first_name", "last_name"]
     USERNAME_FIELD = "email"
 
@@ -99,6 +105,17 @@ class BaseUser(AbstractUser):
     def full_name(self) -> str:
         full_name = f"{self.first_name} {self.last_name}"
         return full_name.strip()
+
+    def save(self, *args, **kwargs):
+        if not self.username:
+            self.username = self.email
+
+        if kwargs.get("is_customer") is None:
+            self.is_customer = True
+
+        profile = UserProfile(user=self).save()
+        kwargs["profile"] = profile
+        super().save(*args, **kwargs)
 
 
 class Address(models.Model):
@@ -164,7 +181,7 @@ class UserProfile(models.Model):
         ("INTERNATIONAL_PASSPORT", "INTERNATIONAL_PASSPORT"),
     ]
 
-    user = models.OneToOneField(BaseUser, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     occupation = models.CharField(
         _("occupation"),
         max_length=100,
@@ -238,3 +255,52 @@ class UserProfile(models.Model):
     @is_verified.setter
     def is_verified(self, value: str) -> None:
         self.verification_status = value
+
+
+class Customer(User):
+    """
+    A proxy model that represents a customer.
+
+    Helps abstracting away the `BaseUser` model and provide, initutive way to access
+    and work with the model.
+
+    Usage:
+
+        customer = Customer.objects.get(email="email@email.com")
+        print(customer.full_name)
+
+        customer = Customer(**fields, **kwargs)
+        customer.save() # overrides the user.save() method
+
+    """
+
+    class Meta:
+        proxy = True
+
+    objects = models.Manager().filter(is_customer=True)
+
+
+class Support(User):
+    """
+    A support user is essentially, the a member of the customer support team,
+    they can adminster and manage support tickets
+    """
+
+    class Meta:
+        proxy = True
+
+    def __str__(self):
+        return self.user.full_name()
+
+    objects = models.Manager().filter(is_staff=True)
+
+
+class Admin(User):
+
+    class Meta:
+        proxy = True
+
+    def __str__(self):
+        return self.user.full_name()
+
+    objects = models.Manager().filter(Q(is_staff=True) & Q(is_superuser=True))
