@@ -5,8 +5,7 @@ from phone_field import PhoneField
 from uuid import uuid4
 from django.contrib.auth import get_user_model
 from django.db.models import Q
-
-User = get_user_model()
+from django.conf import settings
 
 
 class BaseUser(AbstractUser):
@@ -96,7 +95,8 @@ class BaseUser(AbstractUser):
     USERNAME_FIELD = "email"
 
     class Meta:
-        abstract = True
+        verbose_name = _("user")
+        verbose_name_plural = _("users")
 
     def __str__(self):
         return self.username
@@ -181,7 +181,7 @@ class UserProfile(models.Model):
         ("INTERNATIONAL_PASSPORT", "INTERNATIONAL_PASSPORT"),
     ]
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     occupation = models.CharField(
         _("occupation"),
         max_length=100,
@@ -237,8 +237,7 @@ class UserProfile(models.Model):
     )
 
     class Meta:
-        verbose_name = _("user")
-        verbose_name_plural = _("users")
+        verbose_name = _("user_profile")
         indexes = [
             models.Index(fields=["user"]),
             models.Index(fields=["verification_status"]),
@@ -257,7 +256,7 @@ class UserProfile(models.Model):
         self.verification_status = value
 
 
-class Customer(User):
+class Customer(BaseUser):
     """
     A proxy model that represents a customer.
 
@@ -274,13 +273,14 @@ class Customer(User):
 
     """
 
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
+
     class Meta:
         proxy = True
 
-    objects = models.Manager().filter(is_customer=True)
 
-
-class Support(User):
+class Support(BaseUser):
     """
     A support user is essentially, the a member of the customer support team,
     they can adminster and manage support tickets
@@ -292,15 +292,11 @@ class Support(User):
     def __str__(self):
         return self.user.full_name()
 
-    objects = models.Manager().filter(is_staff=True)
 
-
-class Admin(User):
+class Admin(BaseUser):
 
     class Meta:
         proxy = True
 
     def __str__(self):
         return self.user.full_name()
-
-    objects = models.Manager().filter(Q(is_staff=True) & Q(is_superuser=True))
