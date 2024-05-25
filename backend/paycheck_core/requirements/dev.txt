@@ -14,30 +14,26 @@ black==22.3.0
     # via -r backend/paycheck/requirements/dev.in
 click==8.1.7
     # via black
-coverage[toml]==7.5.1
+coverage[toml]==7.4.4
     # via pytest-cov
 decorator==5.1.1
     # via
     #   ipdb
     #   ipython
-django==5.0.6
+django==5.0.3
     # via
     #   -c backend/paycheck/requirements/base.in
     #   django-silk
 django-silk==5.1.0
     # via -r backend/paycheck/requirements/dev.in
-exceptiongroup==1.2.1
+exceptiongroup==1.2.0
     # via
     #   ipython
     #   pytest
 executing==2.0.1
     # via stack-data
-factory-boy==3.3.0
+faker==24.3.0
     # via -r backend/paycheck/requirements/dev.in
-faker==25.1.0
-    # via
-    #   -r backend/paycheck/requirements/dev.in
-    #   factory-boy
 flake8==4.0.1
     # via -r backend/paycheck/requirements/dev.in
 gprof2dot==2022.7.29
@@ -46,29 +42,30 @@ iniconfig==2.0.0
     # via pytest
 ipdb==0.13.13
     # via -r backend/paycheck/requirements/dev.in
-ipython==8.24.0
+ipython==8.22.2
     # via ipdb
 isort==5.10.1
     # via -r backend/paycheck/requirements/dev.in
 jedi==0.19.1
     # via ipython
-matplotlib-inline==0.1.7
+matplotlib-inline==0.1.6
     # via ipython
+
 mccabe==0.6.1
     # via flake8
 mypy-extensions==1.0.0
     # via black
 packaging==24.0
     # via pytest
-parso==0.8.4
+parso==0.8.3
     # via jedi
 pathspec==0.12.1
     # via black
 pexpect==4.9.0
     # via ipython
-platformdirs==4.2.1
+platformdirs==4.2.0
     # via black
-pluggy==1.5.0
+pluggy==1.4.0
     # via pytest
 prompt-toolkit==3.0.43
     # via ipython
@@ -82,11 +79,10 @@ pycodestyle==2.8.0
     #   flake8
 pyflakes==2.4.0
     # via flake8
-pygments==2.18.0
+pygments==2.17.2
     # via ipython
-pytest==8.2.0
+pytest==8.1.1
     # via
-    #   -r backend/paycheck/requirements/dev.in
     #   pytest-cov
     #   pytest-django
 pytest-cov==3.0.0
@@ -99,7 +95,7 @@ six==1.16.0
     # via
     #   asttokens
     #   python-dateutil
-sqlparse==0.5.0
+sqlparse==0.4.4
     # via
     #   django
     #   django-silk
@@ -113,13 +109,11 @@ tomli==2.0.1
     #   coverage
     #   ipdb
     #   pytest
-traitlets==5.14.3
+traitlets==5.14.2
     # via
     #   ipython
     #   matplotlib-inline
-typing-extensions==4.11.0
-    # via
-    #   asgiref
-    #   ipython
+typing-extensions==4.10.0
+    # via asgiref
 wcwidth==0.2.13
     # via prompt-toolkit

@@ -2,11 +2,24 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+from pprint import pprint
 
 
 def main():
     """Run administrative tasks."""
+    import pdb
+
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    src_root = os.path.join(project_root, "src")
+
+    if src_root not in sys.path:
+        sys.path.append(src_root)
+
+    print(f"DJANGO_SETTINGS_MODULE: {os.environ.get('DJANGO_SETTINGS_MODULE')}")
+    print(f"sys.path: {sys.path}")
+
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.base")
+
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

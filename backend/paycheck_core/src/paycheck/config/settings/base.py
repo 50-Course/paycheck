@@ -27,7 +27,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "PAYCHECK$rePlaceMe-in-Production!")
 DEBUG = os.environ.get("PAYCHECK_BACKEND_DEBUG", "off") == "on"
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "0.0.0.0"]
-ALLOWED_HOSTS += os.getenv("PAYCHECK_ALLOWED_HOSTS", "").split(",")
+ALLOWED_HOSTS += os.getenv("PAYCHECK_EXTRA_ALLOWED_HOSTS", "").split(",")
 
 # Application definition
 
@@ -44,7 +44,7 @@ THIRD_PARTY_APPS = [
     "rest_framework",
 ]
 
-LOCAL_APPS = []
+LOCAL_APPS = ["core"]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -132,3 +132,5 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 APPEND_SLASH = False
+
+AUTH_USER_MODEL = "core.BaseUser"
