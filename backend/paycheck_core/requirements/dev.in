@@ -11,3 +11,4 @@ flake8==4.0.1
 isort==5.10.1
 factory-boy
 django-debug-toolbar>=4.2.0
+django-extensions
