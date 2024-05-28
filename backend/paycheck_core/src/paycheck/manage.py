@@ -3,22 +3,10 @@
 
 import os
 import sys
-from pprint import pprint
 
 
 def main():
     """Run administrative tasks."""
-    import pdb
-
-    # project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    # src_root = os.path.join(project_root, "src")
-    #
-    # if src_root not in sys.path:
-    #     sys.path.append(src_root)
-
-    if src_root not in sys.path:
-        sys.path.append(src_root)
-
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.base")
 
     try:

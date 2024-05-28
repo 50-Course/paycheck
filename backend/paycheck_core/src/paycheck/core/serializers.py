@@ -1,13 +1,11 @@
-from rest_framework import serializers
+from src.paycheck.core.models import UserProfile
 from django.conf import settings
+from rest_framework import serializers
 
 User = settings.AUTH_USER_MODEL
 
-from src.paycheck.core.models import UserProfile
-
 
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
 
