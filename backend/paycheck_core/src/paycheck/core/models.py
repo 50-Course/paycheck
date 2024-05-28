@@ -91,7 +91,7 @@ class BaseUser(AbstractUser):
 
     is_customer = models.BooleanField(default=False)
 
-    REQUIRED_FIELDS = ["email", "first_name", "last_name"]
+    REQUIRED_FIELDS = ["first_name", "last_name"]
     USERNAME_FIELD = "email"
 
     class Meta:
@@ -211,6 +211,7 @@ class UserProfile(models.Model):
         Address,
         on_delete=models.SET_NULL,
         help_text="Designates the address of the user",
+        null=True,
     )
     verification_status = models.CharField(
         _("verification status"),
@@ -294,7 +295,6 @@ class Support(BaseUser):
 
 
 class Admin(BaseUser):
-
     class Meta:
         proxy = True
 
