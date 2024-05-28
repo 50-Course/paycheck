@@ -3,8 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from phone_field import PhoneField
 from uuid import uuid4
-from django.contrib.auth import get_user_model
-from django.db.models import Q
 from django.conf import settings
 
 
@@ -273,9 +271,6 @@ class Customer(BaseUser):
         customer.save() # overrides the user.save() method
 
     """
-
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
 
     class Meta:
         proxy = True
