@@ -1,12 +1,13 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, AbstractBaseUser, PermissionsMixin
+from django.utils import choices
 from django.utils.translation import gettext_lazy as _
 from phone_field import PhoneField
 from uuid import uuid4
 from django.conf import settings
 
 
-class BaseUser(AbstractUser):
+class BaseUser(AbstractBaseUser, PermissionsMixin):
     """
     Represent an abstract user model.
 
@@ -41,7 +42,12 @@ class BaseUser(AbstractUser):
 
     """
 
-    cannoical_id = models.UUIDField(
+    class USER_ROLES(models.TextChoices):
+        CUSTOMER = _("Customer")
+        SUPPORT = _("Support")
+        ADMIN = _("Admin")
+
+    id = models.UUIDField(
         _("user id"),
         primary_key=True,
         default=uuid4,
@@ -70,6 +76,7 @@ class BaseUser(AbstractUser):
         blank=True,
         help_text="Designates the last name of the user",
     )
+    date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(
         _("last login"),
         blank=True,
@@ -87,7 +94,22 @@ class BaseUser(AbstractUser):
         help_text="Designates the phone number of the user",
     )
 
+    role = models.CharField(
+        choices=USER_ROLES,
+        help_text="Determines which category a user falls in",
+    )
+
     is_customer = models.BooleanField(default=False)
+    is_staff = models.BooleanField(
+        _("staff status"),
+        default=False,
+        help_text="Designates whether the user can access the admin panel",
+    )
+    is_admin = models.BooleanField(
+        _("admin status"),
+        default=False,
+        help_text="Designates whether the user is an admin",
+    )
 
     REQUIRED_FIELDS = ["first_name", "last_name"]
     USERNAME_FIELD = "email"
@@ -98,11 +120,6 @@ class BaseUser(AbstractUser):
 
     def __str__(self):
         return self.username
-
-    @property
-    def full_name(self) -> str:
-        full_name = f"{self.first_name} {self.last_name}"
-        return full_name.strip()
 
     def save(self, *args, **kwargs):
         if not self.username:
@@ -244,7 +261,7 @@ class UserProfile(models.Model):
         ]
 
     def __str__(self):
-        return self.user.full_name()
+        return self.user.username
 
     @property
     def is_verified(self):
@@ -275,6 +292,11 @@ class Customer(BaseUser):
     class Meta:
         proxy = True
 
+    def save(self, *args, **kwargs) -> None:
+        self.is_customer = True
+        self.role = "customer"
+        super().save(*args, **kwargs)
+
 
 class Support(BaseUser):
     """
@@ -285,13 +307,17 @@ class Support(BaseUser):
     class Meta:
         proxy = True
 
-    def __str__(self):
-        return self.user.full_name()
+    def save(self, *args, **kwargs) -> None:
+        self.is_staff = True
+        self.role = "support"
+        super().save(*args, **kwargs)
 
 
 class Admin(BaseUser):
     class Meta:
         proxy = True
 
-    def __str__(self):
-        return self.user.full_name()
+    def save(self, *args, **kwargs) -> None:
+        self.is_admin = True
+        self.role = "admin"
+        super().save(*args, **kwargs)

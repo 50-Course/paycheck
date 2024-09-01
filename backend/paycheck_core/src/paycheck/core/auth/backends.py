@@ -1,5 +1,4 @@
 from django.contrib.auth.backends import BaseBackend
-from django.http import HttpRequest
 
 
 class PhoneEmailOrAccountNumberAuthBackend(BaseBackend):
